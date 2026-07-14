@@ -214,3 +214,20 @@ Start a dedicated Firefox profile with working audio inside the netns created by
 ~~~ bash
 sudo ip netns exec ns-example sudo -u "$USER" "HOME=$HOME" "PULSE_SERVER=/run/user/$(id -u)/pulse/native" "PULSE_COOKIE=$HOME/.config/pulse/cookie" firefox -P vpn
 ~~~
+
+### Chromium-based browsers in Network Namespace
+
+If you have no other open window of the browser you can use the following command to get a browser instance in the *ns-example* namespace. Brave is used in the example, but any Chromium-based browser should work the same.
+
+> [!NOTE]
+> If there is any other process running for the browser you are using the following command will not work as expected because it will create a new window from the old browser process, never actually using *ns-example*. You may kill all running processes for a browser running `pkill -ex <browser_command>`
+
+~~~ bash
+sudo ip netns exec ns-example sudo -u "$USER" "HOME=$HOME" "PULSE_SERVER=/run/user/$(id -u)/pulse/native" "PULSE_COOKIE=$HOME/.config/pulse/cookie" brave
+~~~
+
+If you wish to open multiple browser windows each in their own namespace you would need to use a different `user-data-dir` for each window you wish to keep open. This will force a new browser process per `user-data-dir`:
+
+~~~ bash
+sudo ip netns exec ns-example sudo -u "$USER" "HOME=$HOME" "PULSE_SERVER=/run/user/$(id -u)/pulse/native" "PULSE_COOKIE=$HOME/.config/pulse/cookie" brave --user-data-dir="$HOME/.config/BraveSoftware/Brave-Browser-ns-example"
+~~~
