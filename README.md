@@ -215,19 +215,21 @@ Start a dedicated Firefox profile with working audio inside the netns created by
 sudo ip netns exec ns-example sudo -u "$USER" "HOME=$HOME" "PULSE_SERVER=/run/user/$(id -u)/pulse/native" "PULSE_COOKIE=$HOME/.config/pulse/cookie" firefox -P vpn
 ~~~
 
-### Chromium-based browsers in Network Namespace
+### Chromium-based Browsers in Network Namespace
 
-If you have no other open window of the browser you can use the following command to get a browser instance in the *ns-example* namespace. Chromium is used in the example, but any Chromium-based browser should work the same.
-
-> [!NOTE]
-> If there is any other process running for the browser you are using the following command will not work as expected because it will create a new window from the old browser process, never actually using *ns-example*. You may kill all running processes for chromium running `pkill -ex chromium`
+If you have no other open Chromium window you can use the following command to get a browser instance in the *ns-example* namespace.
+Chromium is used as an example, but any Chromium-based browser should work the same.
 
 ~~~ bash
-sudo -E ip netns exec ns-bss sudo -E -u "$USER" chromium
+sudo -E ip netns exec ns-example sudo -E -u "$USER" chromium
 ~~~
 
-If you wish to open multiple browser windows each in their own namespace you would need to use a different `user-data-dir` for each window you wish to keep open. This will force a new browser process per `user-data-dir`:
+> [!NOTE]
+> If any other Chromium process is running the command will not work as expected, because it will create a new window in the existing process, which runs outside *ns-example*.
+> In that case you can kill all running processes with `pkill -ex chromium`.
+
+If you wish to open multiple Chromium windows each in their own network namespace you need to use a different `user-data-dir` for each.
 
 ~~~ bash
-sudo -E ip netns exec ns-bss sudo -E -u "$USER" chromium --user-data-dir="$HOME/.config/chromium/chromium-ns-example"
+sudo -E ip netns exec ns-example sudo -E -u "$USER" chromium --user-data-dir="$HOME/.config/chromium/chromium-ns-example"
 ~~~
